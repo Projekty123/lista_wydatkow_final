@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista wydatków</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/daisyui@5"
+        rel="stylesheet"
+        type="text/css"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="script_v4.js" defer></script>
+</head>
+
+<body class="min-h-screen bg-base-200">
+
+    <main class="container mx-auto max-w-5xl px-4 py-8">
+
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold text-primary">
+                Lista wydatków
+            </h1>
+        </header>
+
+        <dialog id="modalWydatek" class="modal">
+            <div class="modal-box">
+
+                <h2
+                    id="modalTytul"
+                    class="mb-4 text-2xl font-bold"
+                >
+                    Dodaj wydatek
+                </h2>
+
+                <form id="formularzWydateku" class="space-y-4">
+
+                    <div class="form-control">
+                        <label for="nazwa" class="label">
+                            <span class="label-text">
+                                Nazwa wydatku
+                            </span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nazwa"
+                            class="input w-full"
+                        >
+                    </div>
+
+                    <div class="form-control">
+                        <label for="kwota" class="label">
+                            <span class="label-text">
+                                Kwota
+                            </span>
+                        </label>
+
+                        <input
+                            type="number"
+                            id="kwota"
+                            step="0.01"
+                            class="input w-full"
+                        >
+                    </div>
+
+                    <div class="form-control">
+                        <label for="kategoria" class="label">
+                            <span class="label-text">
+                                Kategoria
+                            </span>
+                        </label>
+
+                        <select
+                            id="kategoria"
+                            class="select w-full"
+                        >
+                            <option value="">
+                                Wybierz kategorię
+                            </option>
+                            <option value="jedzenie">
+                                Jedzenie
+                            </option>
+                            <option value="transport">
+                                Transport
+                            </option>
+                            <option value="rozrywka">
+                                Rozrywka
+                            </option>
+                            <option value="zakupy">
+                                Zakupy
+                            </option>
+                            <option value="rachunki">
+                                Rachunki
+                            </option>
+                            <option value="inne">
+                                Inne
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="data" class="label">
+                            <span class="label-text">
+                                Data wydatku
+                            </span>
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data"
+                            class="input w-full"
+                        >
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button
+                            type="button"
+                            id="anulujWydatek"
+                            class="btn btn-outline"
+                        >
+                            Anuluj
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Dodaj
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+
+        <section class="mb-6">
+            <h2 class="mb-4 text-2xl font-bold">
+                Podsumowanie
+            </h2>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+                <div class="stat rounded-box bg-base-100 shadow">
+                    <div class="stat-title">
+                        Łączna kwota
+                    </div>
+
+                    <div class="stat-value text-primary">
+                        <span id="suma">0.00</span> zł
+                    </div>
+
+                    <div class="stat-desc">
+                        Wszystkie zapisane wydatki
+                    </div>
+                </div>
+
+                <div class="stat rounded-box bg-base-100 shadow">
+                    <div class="stat-title">
+                        Liczba wydatków
+                    </div>
+
+                    <div class="stat-value">
+                        <span id="liczbaWydatkow">0</span>
+                    </div>
+
+                    <div class="stat-desc">
+                        Zapisane wydatki
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="card mb-6 bg-base-100 shadow-xl">
+            <div class="card-body">
+
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="card-title text-2xl">
+                        Wydatki
+                    </h2>
+
+                    <button
+                        type="button"
+                        id="dodajWydatek"
+                        class="btn btn-primary"
+                    >
+                        Dodaj wydatek
+                    </button>
+                </div>  
+
+                <div class="form-control mb-4">
+                    <input
+                        type="text"
+                        id="wyszukiwarka"
+                        placeholder="Szukaj wydatku..."
+                        class="input w-full"
+                    >
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+                    <div class="form-control">
+                        <label for="filtrKategoria" class="label">
+                            <span class="label-text">
+                                Kategoria
+                            </span>
+                        </label>
+
+                        <select
+                            id="filtrKategoria"
+                            class="select w-full"
+                        >
+                            <option value="wszystkie">
+                                Wszystkie
+                            </option>
+                            <option value="jedzenie">
+                                Jedzenie
+                            </option>
+                            <option value="transport">
+                                Transport
+                            </option>
+                            <option value="rozrywka">
+                                Rozrywka
+                            </option>
+                            <option value="zakupy">
+                                Zakupy
+                            </option>
+                            <option value="rachunki">
+                                Rachunki
+                            </option>
+                            <option value="inne">
+                                Inne
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="filtrMiesiac" class="label">
+                            <span class="label-text">
+                                Miesiąc
+                            </span>
+                        </label>
+
+                        <input
+                            type="month"
+                            id="filtrMiesiac"
+                            class="input w-full"
+                        >
+                    </div>
+
+                    <div class="form-control">
+                        <label for="sortowanie" class="label">
+                            <span class="label-text">
+                                Sortowanie
+                            </span>
+                        </label>
+
+                        <select
+                            id="sortowanie"
+                            class="select w-full"
+                        >
+                            <option value="najnowsze">
+                                Najnowsze
+                            </option>
+                            <option value="najstarsze">
+                                Najstarsze
+                            </option>
+                            <option value="najdrozsze">
+                                Najdroższe
+                            </option>
+                            <option value="najtansze">
+                                Najtańsze
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="mt-6 overflow-x-auto">
+                    <table class="table table-zebra">
+                        <thead>
+                            <tr>
+                                <th>Nazwa</th>
+                                <th>Kwota</th>
+                                <th>Kategoria</th>
+                                <th>Data</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="lista"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="card mb-6 bg-base-100 shadow-xl">
+            <div class="card-body">
+
+                <h2 class="card-title text-2xl">
+                    Wydatki według kategorii
+                </h2>
+
+                <ul
+                    id="podsumowanieKategorii"
+                    class="mt-4 space-y-2"
+                ></ul>
+
+            </div>
+        </section>
+
+        <div class="flex justify-center pb-6">
+            <button
+                type="button"
+                id="usunWszystkie"
+                class="btn btn-error btn-outline"
+            >
+                Usuń wszystkie wydatki
+            </button>
+        </div>
+
+    </main>
+
+</body>
+</html>
